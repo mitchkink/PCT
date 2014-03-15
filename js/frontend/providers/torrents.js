@@ -56,12 +56,12 @@ App.getTorrentsCollection = function (options) {
                     title:      movie.MovieTitleClean,
                     year:       movie.MovieYear,
                     runtime:    movie.MovieRuntime,
-                    synopsis:   'Hi my name is Mitchell',
+                    synopsis:   data.overview,
                     voteAverage:movie.MovieRating,
 
-                    image:      movie.CoverImage,
-                    bigImage:   movie.CoverImage,
-                    backdrop:   movie.LargeScreenshot1,
+                    image:      POSTER_PREFIX + data.poster_path,
+                    bigImage:   POSTER_PREFIX + data.poster_path,
+                    backdrop:   BACKDROP_PREFIX + data.backdrop_path,
 
                     quality:    quality,
                     torrent:    torrent,
