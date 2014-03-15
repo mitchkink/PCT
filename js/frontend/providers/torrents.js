@@ -1,6 +1,6 @@
 App.getTorrentsCollection = function (options) {
 
-    var url = 'http://yts.re/api/list.json';
+    var url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
 
     var supportedLanguages = ['english', 'french', 'dutch', 'portuguese', 'romanian', 'spanish', 'turkish', 'brazilian', 
                               'italian', 'german', 'hungarian', 'russian', 'ukrainian', 'finnish', 'bulgarian', 'latvian'];
@@ -57,9 +57,9 @@ App.getTorrentsCollection = function (options) {
                     synopsis:   movie.ShortDescription,
                     voteAverage:movie.MovieRating,
 
-                    image:      movie.MovieCover,
-                    bigImage:   movie.MovieCover,
-                    backdrop:   movie.LargeCover,
+                    image:      movie.CoverImage,
+                    bigImage:   movie.LargeCover,
+                    backdrop:   movie.LargeScreenshot1,
 
                     quality:    quality,
                     torrent:    torrent,
