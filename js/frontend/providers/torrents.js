@@ -2,8 +2,6 @@ App.getTorrentsCollection = function (options) {
 
     var url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
 
-    var supportedLanguages = ['english', 'french', 'dutch', 'portuguese', 'romanian', 'spanish', 'turkish', 'brazilian', 
-                              'italian', 'german', 'hungarian', 'russian', 'ukrainian', 'finnish', 'bulgarian', 'latvian'];
     if (options.genre) {
         url += '?genre=' + options.genre;
     } else {
