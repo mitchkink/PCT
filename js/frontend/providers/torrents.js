@@ -1,7 +1,9 @@
 App.getTorrentsCollection = function (options) {
 
-    var url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
+    var url = 'http://yts.re/api/list.json';
 
+    var supportedLanguages = ['english', 'french', 'dutch', 'portuguese', 'romanian', 'spanish', 'turkish', 'brazilian', 
+                              'italian', 'german', 'hungarian', 'russian', 'ukrainian', 'finnish', 'bulgarian', 'latvian'];
     if (options.genre) {
         url += '?genre=' + options.genre;
     } else {
@@ -20,49 +22,54 @@ App.getTorrentsCollection = function (options) {
         model: App.Model.Movie,
         parse: function (data) {
             var movies = [];
-            var memory = {};
-                        
-            if (data.error || typeof data.MovieList === 'undefined') {
-                return movies;
-            }
 
             data.MovieList.forEach(function (movie) {
-                // Temporary object
-                var movieModel = {
-                    imdb:       movie.ImdbCode.replace('tt', ''),
-                    year:       movie.MovieYear,
-                    title:      movie.MovieTitleClean,
-                    torrent:    movie.TorrentUrl,
-                    torrents:   {},
-                    quality:    movie.Quality,
-                    seeders:    movie.TorrentSeeds,
-                    leechers:   movie.TorrentPeers
-                };
                 
-                var stored = memory[movieModel.imdb];
-                
- 
+                var videos = {};
+                var torrents = {};
+                torrent = '';
+                quality = '';
                 var subtitles = {};
                 movie.subtitles = []; //create empty list because this source does not have subtitles
-              
-                if (stored.quality !== movieModel.quality && movieModel.quality === '720p') {
-                    stored.torrent = movieModel.torrent;
-                    stored.quality = '720p';
-                }
-
+                // Put the video and torrent list into a {quality: url} format
+               
+                videos[movie.Quality] = movie.TorrentUrl;
+                torrents[movie.Quality] = movie.TorrentUrl;
                 
-                // Set it's correspondent quality torrent URL.
-                stored.torrents[movie.Quality] = movie.TorrentUrl;
+                // Pick the worst quality by default
+                if( typeof torrents['720p'] != 'undefined' ){ quality = '720p'; torrent = torrents['720p']; }
+                else if( typeof torrents['1080p'] != 'undefined' ){ quality = '1080p'; torrent = torrents['1080p']; }
+
+                for( var k in movie.subtitles ) {
+                    if( supportedLanguages.indexOf(movie.subtitles[k].language) < 0 ){ continue; }
+                    if( typeof subtitles[movie.subtitles[k].language] == 'undefined' ) {
+                        subtitles[movie.subtitles[k].language] = movie.subtitles[k].url;
+                    }
+                }
 
                 if( (typeof movie.subtitles == 'undefined' || movie.subtitles.length == 0) && (typeof movie.videos == 'undefined' || movie.videos.length == 0) ){ console.log('aaa'); }
                 
-                               // Push it if not currently on array.
-                if (movies.indexOf(stored) === -1) {
-                    movies.push(stored);
-                }
+                movies.push({
+                    imdb:       movie.ImdbCode,
+                    title:      movie.MovieTitleClean,
+                    year:       movie.MovieYear,
+                    runtime:    movie.MovieRuntime,
+                    synopsis:   movie.ShortDescription,
+                    voteAverage:movie.MovieRating,
+
+                    image:      movie.MovieCover,
+                    bigImage:   movie.MovieCover,
+                    backdrop:   movie.LargeCover,
+
+                    quality:    quality,
+                    torrent:    torrent,
+                    torrents:   torrents,
+                    videos:     videos,
+                    subtitles:  subtitles,
+                    seeders:    movie.TorrentSeeds,
+                    leechers:   movie.TorrentPeers
+                });
             });
-            
-            console.log('Torrents found:', data.MovieList.length);
             
             return movies;
         }
