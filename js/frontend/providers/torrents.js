@@ -1,22 +1,24 @@
 App.getTorrentsCollection = function (options) {
 
-    var url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
+    var start = +new Date(),
+        url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
 
     var supportedLanguages = ['english', 'french', 'dutch', 'portuguese', 'romanian', 'spanish', 'turkish', 'brazilian', 
                               'italian', 'german', 'hungarian', 'russian', 'ukrainian', 'finnish', 'bulgarian', 'latvian'];
+    
+    if (options.keywords) {
+        url += '&keywords=' + options.keywords;
+    }
+
     if (options.genre) {
-        url += '?genre=' + options.genre;
-    } else {
-        if (options.keywords) {
-            url += '?keywords=' + options.keywords;
-        } 
+        url += '&genre=' + options.genre;
     }
 
     if (options.page && options.page.match(/\d+/)) {
-        var str = url.match(/\?/) ? '&' : '?';
-
-        url += str + 'set=' + options.page;
+        url += '&set=' + options.page;
     }
+
+
     var MovieTorrentCollection = Backbone.Collection.extend({
         url: url,
         model: App.Model.Movie,
@@ -54,11 +56,11 @@ App.getTorrentsCollection = function (options) {
                     title:      movie.MovieTitleClean,
                     year:       movie.MovieYear,
                     runtime:    movie.MovieRuntime,
-                    synopsis:   movie.ShortDescription,
+                    synopsis:   'Hi my name is Mitchell',
                     voteAverage:movie.MovieRating,
 
                     image:      movie.CoverImage,
-                    bigImage:   movie.LargeCover,
+                    bigImage:   movie.CoverImage,
                     backdrop:   movie.LargeScreenshot1,
 
                     quality:    quality,
