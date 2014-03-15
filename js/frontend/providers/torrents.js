@@ -59,9 +59,9 @@ App.getTorrentsCollection = function (options) {
                     synopsis:   data.overview,
                     voteAverage:movie.MovieRating,
 
-                    image:      POSTER_PREFIX + data.poster_path,
-                    bigImage:   POSTER_PREFIX + data.poster_path,
-                    backdrop:   BACKDROP_PREFIX + data.backdrop_path,
+                    image:      movie.poster_path,
+                    bigImage:   movie.poster_path,
+                    backdrop:   movie.backdrop_path,
 
                     quality:    quality,
                     torrent:    torrent,
