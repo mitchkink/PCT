@@ -1,8 +1,10 @@
 App.getTorrentsCollection = function (options) {
 
-    var start = +new Date(),
-        url = 'http://yts.re/api/list.json';
+    var url = 'http://yts.re/api/list.json?sort=seeds&limit=50';
 
+    var supportedLanguages = ['english', 'french', 'dutch', 'portuguese', 'romanian', 'spanish', 'turkish', 'brazilian', 
+                              'italian', 'german', 'hungarian', 'russian', 'ukrainian', 'finnish', 'bulgarian', 'latvian'];
+    
     if (options.keywords) {
         url += '&keywords=' + options.keywords;
     }
@@ -13,20 +15,21 @@ App.getTorrentsCollection = function (options) {
 
     if (options.page && options.page.match(/\d+/)) {
         url += '&set=' + options.page;
-    }
+    }    
+    
 
     var MovieTorrentCollection = Backbone.Collection.extend({
         url: url,
         model: App.Model.Movie,
         parse: function (data) {
-            var movies = [],
+            var movies = [];
                 memory = {};
-
+                
             if (data.error || typeof data.MovieList === 'undefined') {
                 return movies;
             }
 
-            data.MovieList.forEach(function (movie) {
+                       data.MovieList.forEach(function (movie) {
                 // Temporary object
                 var movieModel = {
                     imdb:       movie.ImdbCode.replace('tt', ''),
